@@ -1,0 +1,70 @@
+<sbe:messageSchema
+  xmlns:ns2="http://www.fixprotocol.org/ns/simple/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:sbe="http://fixprotocol.io/2016/sbe"
+  package="java.ana.edu"
+  id="1"
+  version="100"
+  semanticVersion="8.3.3"
+  byteOrder="littleEndian"
+  xsi:schemaLocation="http://fixprotocol.io/2016/sbe sbe.xsd
+  http://www.fixprotocol.org/ns/simple/1.0 ">
+
+  <types>
+    <composite name="messageHeader" description="Message identifiers and length of message root.">
+      <type name="blockLength" primitiveType="uint16" description="Length of the root of the FIX message contained before repeating groups or variable/conditions fields."/>
+      <type name="templateId" primitiveType="uint16" description="Template ID used to encode the message."/>
+      <type name="schemaId" primitiveType="uint16" description="ID of the system publishing the message."/>
+      <type name="version" primitiveType="uint16" description="Schema version."/>
+    </composite>
+
+    <composite name="UTCTimestamp" semanticType="UTCTimestamp" description="UTC timestamp with millisecond precision.">
+      <type name="time" primitiveType="uint64" description="UTC timestamp with millisecond precision (Unix Epoch)."/>
+      <type name="unit" primitiveType="uint8" presence="constant" valueRef="TimeUnit.MILLISECOND"/>
+    </composite>
+
+    <composite name="bookNameEncoding" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="20" description="Length of name data."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="name data in ASCII."/>
+    </composite>
+
+    <composite name="authorEncoding" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="80" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII"
+        description="name author in ASCII."/>
+    </composite>
+
+    <composite name="Price" semanticType="Price" description="Mandatory price.">
+      <type name="mantissa" primitiveType="int64" description="Mantissa (for fixed-point decimal numbers)."/>
+      <type name="exponent" primitiveType="int8" presence="constant" description="Exponent (for fixed-point decimal numbers).">-4
+      </type>
+    </composite>
+
+    <enum name="BookGenre" encodingType="uint8" semanticType="Int">
+      <validValue name="FICTION">0</validValue>
+      <validValue name="NON-FICTION">1</validValue>
+      <validValue name="MISTERY">2</validValue>
+      <validValue name="ROMANCE">3</validValue>
+      <validValue name="FANTASY">4</validValue>
+      <validValue name="SCIENCE FICTION">5</validValue>
+      <validValue name="HORROR">6</validValue>
+      <validValue name="HISTORICAL FICTION">7</validValue>
+    </enum>
+
+  </types>
+
+  <sbe:message name="Book" id="1">
+    <field name="BookId" type="uint32" id="1"/>
+    <field name="bookGenre" type="BookGenre" id="2"/>
+    <field name="publishedDate" type="UTCTimestamp" id="3"/>
+    <field name="stock" type="uint32" id="4"/>
+    <field name="price" id="5" type="Price"/>
+    <data name="author" type="authorEncoding" id="5" semanticType="String"/>
+    <data name="bookName" type="bookNameEncoding" id="5" semanticType="String"/>
+  </sbe:message>
+
+  <sbe:message name="HeaderMessage" id="0"
+    description="Generate code for FramingHeader for convenience, making easier to handle this header as SBE instead of handling as pure binary format. It is not meant to be used as a standalone SBE message.">
+    <field name="framingHeader" type="FramingHeader" id="0"/>
+  </sbe:message>
+</sbe:messageSchema>
