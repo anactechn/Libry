@@ -9,10 +9,10 @@ import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Test;
 import uk.co.real_logic.sbe.ir.generated.MessageHeaderDecoder;
 
-public class Main {
+public class LibryTemplateTest {
 
         @Test
-        public void test1() {
+        public void should() {
 
             final short BLOCK_LENGHT_OFFSET = 0;
             final short TEMPLATE_ID_OFFSET = 2;
