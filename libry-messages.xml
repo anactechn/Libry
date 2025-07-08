@@ -53,18 +53,36 @@
 
   </types>
 
-  <sbe:message name="Book" id="1">
-    <field name="BookId" type="uint32" id="1"/>
-    <field name="bookGenre" type="BookGenre" id="2"/>
-    <field name="publishedDate" type="UTCTimestamp" id="3"/>
-    <field name="stock" type="uint32" id="4"/>
-    <field name="price" id="5" type="Price"/>
-    <data name="author" type="authorEncoding" id="5" semanticType="String"/>
-    <data name="bookName" type="bookNameEncoding" id="5" semanticType="String"/>
-  </sbe:message>
-
   <sbe:message name="HeaderMessage" id="0"
     description="Generate code for FramingHeader for convenience, making easier to handle this header as SBE instead of handling as pure binary format. It is not meant to be used as a standalone SBE message.">
     <field name="framingHeader" type="FramingHeader" id="0"/>
   </sbe:message>
+
+  <sbe:message name="BookMessage" id="1">
+    <field name="BookId" type="uint32" id="1"/>
+    <field name="bookGenre" type="BookGenre" id="2"/>
+    <field name="publishedDate" type="UTCTimestamp" id="3"/>
+    <field name="stock" type="uint32" id="4"/>
+    <field name="price" type="Price" id="5"/>
+    <data name="author" type="authorEncoding" id="6" semanticType="String"/>
+    <data name="bookName" type="bookNameEncoding" id="7" semanticType="String"/>
+  </sbe:message>
+  
+  <sbe:message name="EmployeeMessage" id="2">
+    <field name="employeeId" id="8" type="uint32"/>
+    <field name="dtBirth" id="9" type="UTCTimestamp"/>
+    <field name="dailyHours" id="10" type="UTC"/>
+    <field name="payementForHour" id="11" type="uint32"/>
+    <field name="entryDt" id="12" type="UTCTimestamp"/>
+    <data name="employeeName" id="13" type="nameEncoding"/>
+    <data name="SSN" id="14" type="SSN"/>
+    <data name="employeeFunction" id="" type=""/>
+
+  </sbe:message>
+
+  <sbe:message name="SupplierMessage" id="3">
+
+  </sbe:message>
+  
+
 </sbe:messageSchema>
