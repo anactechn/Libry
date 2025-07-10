@@ -28,7 +28,7 @@
       <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="name data in ASCII."/>
     </composite>
 
-    <composite name="authorEncoding" semanticType="String">
+    <composite name="NameEncoding" semanticType="String">
       <type name="length" primitiveType="uint8" maxValue="80" description="Length of author."/>
       <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII"
         description="name author in ASCII."/>
@@ -51,6 +51,31 @@
       <validValue name="HISTORICAL FICTION">7</validValue>
     </enum>
 
+    <composite name="SSN" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="11" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="SSN author in ASCII."/>
+    </composite>
+
+    <composite name="ActualEmployeeFunction" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="30" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="SSN author in ASCII."/>
+    </composite>
+
+    <composite name="EIN" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="11" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="SSN author in ASCII."/>
+    </composite>
+
+    <composite name="Telephone" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="20" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="SSN author in ASCII."/>
+    </composite>
+
+    <composite name="Email" semanticType="String">
+      <type name="length" primitiveType="uint8" maxValue="50" description="Length of author."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="SSN author in ASCII."/>
+    </composite>
+
   </types>
 
   <sbe:message name="HeaderMessage" id="0"
@@ -58,31 +83,39 @@
     <field name="framingHeader" type="FramingHeader" id="0"/>
   </sbe:message>
 
-  <sbe:message name="BookMessage" id="1">
-    <field name="BookId" type="uint32" id="1"/>
+  <sbe:message name="BookInfoMessage" id="1">
+    <field name="bookId" type="uint32" id="1"/>
     <field name="bookGenre" type="BookGenre" id="2"/>
     <field name="publishedDate" type="UTCTimestamp" id="3"/>
     <field name="stock" type="uint32" id="4"/>
     <field name="price" type="Price" id="5"/>
-    <data name="author" type="authorEncoding" id="6" semanticType="String"/>
+    <data name="author" type="NameEncoding" id="6" semanticType="String"/>
     <data name="bookName" type="bookNameEncoding" id="7" semanticType="String"/>
   </sbe:message>
   
-  <sbe:message name="EmployeeMessage" id="2">
+  <sbe:message name="EmployeeInfoMessage" id="2">
     <field name="employeeId" id="8" type="uint32"/>
     <field name="dtBirth" id="9" type="UTCTimestamp"/>
     <field name="dailyHours" id="10" type="UTC"/>
     <field name="payementForHour" id="11" type="uint32"/>
     <field name="entryDt" id="12" type="UTCTimestamp"/>
-    <data name="employeeName" id="13" type="nameEncoding"/>
+    <data name="employeeName" id="13" type="NameEncoding"/>
     <data name="SSN" id="14" type="SSN"/>
-    <data name="employeeFunction" id="" type=""/>
-
+    <data name="actualEmployeeFunction" id="15" type="actualEmployeeFunction"/>
+    <data name="employeeTelephone" id="16" type="Telephone"/>
+    <data name="employeeEmail" id="17" type="Email"/>
   </sbe:message>
 
-  <sbe:message name="SupplierMessage" id="3">
-
+  <sbe:message name="SupplierInfoMessage" id="3">
+    <field name="supplierId" id="18" type="uint32"/>
+    <field name="bookId" type="uint32" id="1"/>
+    <field name="supplierStock" type="uint32" id="19"/>
+    <field name="nextDelivery" id="20" type="UTCTimestamp"/>
+    <data name="supplierName" id="21" type="NameEncoding"/>
+    <data name="EIN" id="22" type="EIN"/>
+    <data name="supplierTelephone" id="23" type="Telephone"/>
+    <data name="supplierEmail" id="24" type="Email"/>
   </sbe:message>
-  
+
 
 </sbe:messageSchema>
