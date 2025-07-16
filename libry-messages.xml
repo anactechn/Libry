@@ -2,7 +2,7 @@
   xmlns:ns2="http://www.fixprotocol.org/ns/simple/1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:sbe="http://fixprotocol.io/2016/sbe"
-  package="java.ana.edu"
+  package="ana.edu"
   id="1"
   version="100"
   semanticVersion="8.3.3"
@@ -20,35 +20,32 @@
 
     <composite name="UTCTimestamp" semanticType="UTCTimestamp" description="UTC timestamp with millisecond precision.">
       <type name="time" primitiveType="uint64" description="UTC timestamp with millisecond precision (Unix Epoch)."/>
-      <type name="unit" primitiveType="uint8" presence="constant" valueRef="TimeUnit.MILLISECOND"/>
     </composite>
 
     <composite name="bookNameEncoding" semanticType="String">
-      <type name="length" primitiveType="uint8" maxValue="20" description="Length of name data."/>
+      <type name="length" primitiveType="uint8" maxValue="80" description="Length of name data."/>
       <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="name data in ASCII."/>
     </composite>
 
     <composite name="NameEncoding" semanticType="String">
       <type name="length" primitiveType="uint8" maxValue="80" description="Length of author."/>
-      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII"
-        description="name author in ASCII."/>
+      <type name="varData" primitiveType="char" length="0" characterEncoding="ASCII" description="name author in ASCII."/>
     </composite>
 
     <composite name="Price" semanticType="Price" description="Mandatory price.">
       <type name="mantissa" primitiveType="int64" description="Mantissa (for fixed-point decimal numbers)."/>
-      <type name="exponent" primitiveType="int8" presence="constant" description="Exponent (for fixed-point decimal numbers).">-4
-      </type>
+      <type name="exponent" primitiveType="int8" presence="constant" description="Exponent (for fixed-point decimal numbers).">-4</type>
     </composite>
 
     <enum name="BookGenre" encodingType="uint8" semanticType="Int">
       <validValue name="FICTION">0</validValue>
-      <validValue name="NON-FICTION">1</validValue>
-      <validValue name="MISTERY">2</validValue>
+      <validValue name="NON_FICTION">1</validValue>
+      <validValue name="MYSTERY">2</validValue>
       <validValue name="ROMANCE">3</validValue>
       <validValue name="FANTASY">4</validValue>
-      <validValue name="SCIENCE FICTION">5</validValue>
+      <validValue name="SCIENCE_FICTION">5</validValue>
       <validValue name="HORROR">6</validValue>
-      <validValue name="HISTORICAL FICTION">7</validValue>
+      <validValue name="HISTORICAL_FICTION">7</validValue>
     </enum>
 
     <composite name="SSN" semanticType="String">
@@ -78,11 +75,6 @@
 
   </types>
 
-  <sbe:message name="HeaderMessage" id="0"
-    description="Generate code for FramingHeader for convenience, making easier to handle this header as SBE instead of handling as pure binary format. It is not meant to be used as a standalone SBE message.">
-    <field name="framingHeader" type="FramingHeader" id="0"/>
-  </sbe:message>
-
   <sbe:message name="BookInfoMessage" id="1">
     <field name="bookId" type="uint32" id="1"/>
     <field name="bookGenre" type="BookGenre" id="2"/>
@@ -96,12 +88,12 @@
   <sbe:message name="EmployeeInfoMessage" id="2">
     <field name="employeeId" id="8" type="uint32"/>
     <field name="dtBirth" id="9" type="UTCTimestamp"/>
-    <field name="dailyHours" id="10" type="UTC"/>
-    <field name="payementForHour" id="11" type="uint32"/>
+    <field name="dailyHours" id="10" type="UTCTimestamp"/>
+    <field name="paymentForHour" id="11" type="uint32"/>
     <field name="entryDt" id="12" type="UTCTimestamp"/>
     <data name="employeeName" id="13" type="NameEncoding"/>
     <data name="SSN" id="14" type="SSN"/>
-    <data name="actualEmployeeFunction" id="15" type="actualEmployeeFunction"/>
+    <data name="actualEmployeeFunction" id="15" type="ActualEmployeeFunction"/>
     <data name="employeeTelephone" id="16" type="Telephone"/>
     <data name="employeeEmail" id="17" type="Email"/>
   </sbe:message>

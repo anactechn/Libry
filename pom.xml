@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,12 +6,36 @@
   <groupId>ana.edu</groupId>
   <artifactId>Libry</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <name>Libry</name>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <sbe.tool.version>1.28.3</sbe.tool.version>
+    <agrona.version>1.22.0</agrona.version>
+
+    <!-- CODEC Path (https://github.com/real-logic/simple-binary-encoding/wiki/SBE-Tool-Maven) -->
+    <codecs.generated.sources.path>${project.build.directory}/generated/</codecs.generated.sources.path>
+
+    <!-- CODEC Properties -->
+    <codec.namespace>ana.edu</codec.namespace>
+
+    <!-- Maven plugins -->
+    <maven.jar.plugin.version>3.3.0</maven.jar.plugin.version>
+    <maven.source.plugin.version>3.3.0</maven.source.plugin.version>
+    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <maven.release.plugin.version>2.5</maven.release.plugin.version>
+    <maven.assembly.plugin.version>3.3.0</maven.assembly.plugin.version>
+    <maven.resources.plugin.version>3.3.0</maven.resources.plugin.version>
+    <maven.javadoc.plugin.version>3.6.3</maven.javadoc.plugin.version>
+    <maven.scm.plugin.version>1.9.1</maven.scm.plugin.version>
+    <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
+    <builder.helper.maven.plugin.version>3.0.0</builder.helper.maven.plugin.version>
+    <buildDirectory>${project.basedir}/target</buildDirectory>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -26,7 +49,102 @@
       <version>1.28.3</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>build-helper-maven-plugin</artifactId>
+      <version>${builder.helper.maven.plugin.version}</version>
+    </dependency>
 
   </dependencies>
+  <build>
+  <directory>${buildDirectory}</directory>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>generate-codecs</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>uk.co.real_logic.sbe.SbeTool</mainClass>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <!-- Options Guide (https://github.com/real-logic/simple-binary-encoding/wiki/Sbe-Tool-Guide) -->
+              <systemProperties>
+                <systemProperty>
+                  <key>sbe.output.dir</key>
+                  <value>${codecs.generated.sources.path}</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.java.generate.interfaces</key>
+                  <value>true</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.validation.xsd</key>
+                  <value>sbe.xsd</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.validation.warnings.fatal</key>
+                  <value>true</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.validation.stop.on.error</key>
+                  <value>true</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.generate.ir</key>
+                  <value>true</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>sbe.target.namespace</key>
+                  <value>${codec.namespace}</value>
+                </systemProperty>
+              </systemProperties>
+              <arguments>
+                <argument>libry-messages.xml</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>uk.co.real-logic</groupId>
+            <artifactId>sbe-tool</artifactId>
+            <version>${sbe.tool.version}</version>
+            <scope>compile</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.agrona</groupId>
+            <artifactId>agrona</artifactId>
+            <version>${agrona.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${builder.helper.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${codecs.generated.sources.path}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
 
+  </build>
 </project>
