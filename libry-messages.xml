@@ -34,7 +34,6 @@
 
     <composite name="Price" semanticType="Price" description="Mandatory price.">
       <type name="mantissa" primitiveType="int64" description="Mantissa (for fixed-point decimal numbers)."/>
-      <type name="exponent" primitiveType="int8" presence="constant" description="Exponent (for fixed-point decimal numbers).">-4</type>
     </composite>
 
     <enum name="BookGenre" encodingType="uint8" semanticType="Int">
@@ -75,7 +74,7 @@
 
   </types>
 
-  <sbe:message name="BookInfoMessage" id="1">
+  <sbe:message name="BookInfo" id="1">
     <field name="bookId" type="uint32" id="1"/>
     <field name="bookGenre" type="BookGenre" id="2"/>
     <field name="publishedDate" type="UTCTimestamp" id="3"/>
@@ -85,7 +84,7 @@
     <data name="bookName" type="bookNameEncoding" id="7" semanticType="String"/>
   </sbe:message>
   
-  <sbe:message name="EmployeeInfoMessage" id="2">
+  <sbe:message name="EmployeeInfo" id="2">
     <field name="employeeId" id="8" type="uint32"/>
     <field name="dtBirth" id="9" type="UTCTimestamp"/>
     <field name="dailyHours" id="10" type="UTCTimestamp"/>
@@ -98,7 +97,7 @@
     <data name="employeeEmail" id="17" type="Email"/>
   </sbe:message>
 
-  <sbe:message name="SupplierInfoMessage" id="3">
+  <sbe:message name="SupplierInfo" id="3">
     <field name="supplierId" id="18" type="uint32"/>
     <field name="bookId" type="uint32" id="1"/>
     <field name="supplierStock" type="uint32" id="19"/>

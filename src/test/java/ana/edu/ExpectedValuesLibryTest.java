@@ -8,7 +8,7 @@ import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Test;
 
-public class LibryTemplateTest {
+public class ExpectedValuesLibryTest {
 
     final short MESSAGE_HEADER_OFFSET = 0;
 
@@ -29,27 +29,27 @@ public class LibryTemplateTest {
     final short SCHEMA_ID_OFFSET = 4;
     final short VERSION_OFFSET = 6;
 
-    final short BOOK_ID_OFFSET = 0;
-    final short BOOK_GENRE_OFFSET = 4;
-    final short PUBLISHED_DATE_OFFSET = 5;
-    final short STOCK_OFFSET = 13;
-    final short PRICE_OFFSET = 17;
-    final short AUTHOR_LENGTH_OFFSET = 25;
-    final short AUTHOR_VAR_DATA_OFFSET = 26;
+    final short BOOK_ID_OFFSET = 8;
+    final short BOOK_GENRE_OFFSET = 12;
+    final short PUBLISHED_DATE_OFFSET = 13;
+    final short STOCK_OFFSET = 21;
+    final short PRICE_OFFSET = 25;
+    final short AUTHOR_LENGTH_OFFSET = 33;
+    final short AUTHOR_VAR_DATA_OFFSET = 34;
 
-    final short EMPLOYEE_ID_OFFSET = 0;
-    final short DT_BIRTH_OFFSET = 4;
-    final short DAILY_HOURS_OFFSET = 12;
-    final short PAYMENT_FOR_HOUR_OFFSET = 20;
-    final short ENTRY_DT_OFFSET = 24;
-    final short EMPLOYEE_NAME_LENGTH_OFFSET = 32;
-    final short EMPLOYEE_NAME_VAR_DATA_OFFSET = 33;
+    final short EMPLOYEE_ID_OFFSET = 8;
+    final short DT_BIRTH_OFFSET = 12;
+    final short DAILY_HOURS_OFFSET = 20;
+    final short PAYMENT_FOR_HOUR_OFFSET = 28;
+    final short ENTRY_DT_OFFSET = 32;
+    final short EMPLOYEE_NAME_LENGTH_OFFSET = 40;
+    final short EMPLOYEE_NAME_VAR_DATA_OFFSET = 41;
 
-    final short SUPPLIER_ID_OFFSET = 0;
-    final short SUPPLIER_STOCK_OFFSET = 8;
-    final short NEXT_DELIVERY_OFFSET = 12;
-    final short SUPPLIER_NAME_LENGTH_OFFSET = 20;
-    final short SUPPLIER_NAME_VARDATA_OFFSET = 21;
+    final short SUPPLIER_ID_OFFSET = 8;
+    final short SUPPLIER_STOCK_OFFSET = 16;
+    final short NEXT_DELIVERY_OFFSET = 20;
+    final short SUPPLIER_NAME_LENGTH_OFFSET = 28;
+    final short SUPPLIER_NAME_VARDATA_OFFSET = 29;
 
     final byte MESSAGE_HEADER_LENGTH_CAPACITY = 8;
 
@@ -82,7 +82,6 @@ public class LibryTemplateTest {
 
     @Test
     public void giveMessageHeader_WhenAssertEqualsAreAllCorrects_ThenPrintResult() {
-
         final short expectedBlockLength = 85;
         final short expectedTemplateId = 1;
         final short expectedSchemaId = 1;
@@ -90,10 +89,13 @@ public class LibryTemplateTest {
 
         MutableDirectBuffer bufferMessageHeader = new UnsafeBuffer(ByteBuffer.allocateDirect(MESSAGE_HEADER_LENGTH_CAPACITY));
 
-        bufferMessageHeader.putShort(BLOCK_LENGTH_OFFSET, expectedBlockLength, ByteOrder.LITTLE_ENDIAN);
-        bufferMessageHeader.putShort(TEMPLATE_ID_OFFSET, expectedTemplateId, ByteOrder.LITTLE_ENDIAN);
-        bufferMessageHeader.putShort(SCHEMA_ID_OFFSET, expectedSchemaId, ByteOrder.LITTLE_ENDIAN);
-        bufferMessageHeader.putShort(VERSION_OFFSET, expectedVersion, ByteOrder.LITTLE_ENDIAN);
+        MessageHeaderEncoder encoder = new MessageHeaderEncoder();
+        encoder.wrap(bufferMessageHeader, MESSAGE_HEADER_OFFSET);
+
+        encoder.blockLength(expectedBlockLength);
+        encoder.templateId(expectedTemplateId);
+        encoder.schemaId(expectedSchemaId);
+        encoder.version(expectedVersion);
 
         final short blockLength = bufferMessageHeader.getShort(BLOCK_LENGTH_OFFSET, ByteOrder.LITTLE_ENDIAN);
         final short templateId = bufferMessageHeader.getShort(TEMPLATE_ID_OFFSET, ByteOrder.LITTLE_ENDIAN);
@@ -112,12 +114,11 @@ public class LibryTemplateTest {
 
     @Test
     public void giveMessageBook_WhenAssertEqualsAreAllCorrects_ThenPrintResult() {
-
         final int expectedBookId = 1497;
         final byte expectedBookGenre = 3;
-        final long expectedPublishedDate = -453589200000L;
+        final long expectedPublishedDate = -452313442000L;
         final int expectedStock = 20;
-        final long expectedPrice = 150;
+        final long expectedPrice = 150L;
         final byte expectedAuthorLength = 16;
         final String expectedAuthorVarData = "Vladimir Nabokov";
         final byte expectedBookLength = 6;
@@ -126,17 +127,19 @@ public class LibryTemplateTest {
         final short BOOK_LENGTH_OFFSET = (short) (AUTHOR_VAR_DATA_OFFSET + expectedAuthorLength);
         final byte BOOK_VAR_DATA_OFFSET = (byte) (BOOK_LENGTH_OFFSET + BOOK_LENGTH_CAPACITY);
 
-        MutableDirectBuffer bufferMessageBook = new UnsafeBuffer(ByteBuffer.allocateDirect((BOOK_ID_LENGTH_CAPACITY + BOOK_GENRE_LENGTH_CAPACITY + PUBLISHED_DATE_LENGTH_CAPACITY + STOCK_LENGTH_CAPACITY + PRICE_LENGTH_CAPACITY + AUTHOR_LENGTH_CAPACITY + expectedAuthorLength + BOOK_LENGTH_CAPACITY+ expectedBookLength)));
+        MutableDirectBuffer bufferMessageBook = new UnsafeBuffer(ByteBuffer.allocateDirect(( MESSAGE_HEADER_LENGTH_CAPACITY + BOOK_ID_LENGTH_CAPACITY + BOOK_GENRE_LENGTH_CAPACITY + PUBLISHED_DATE_LENGTH_CAPACITY + STOCK_LENGTH_CAPACITY + PRICE_LENGTH_CAPACITY + AUTHOR_LENGTH_CAPACITY + expectedAuthorLength + BOOK_LENGTH_CAPACITY + expectedBookLength)));
 
-        bufferMessageBook.putInt(BOOK_ID_OFFSET, expectedBookId);
-        bufferMessageBook.putByte(BOOK_GENRE_OFFSET, expectedBookGenre);
-        bufferMessageBook.putLong(PUBLISHED_DATE_OFFSET, expectedPublishedDate);
-        bufferMessageBook.putInt(STOCK_OFFSET, expectedStock);
-        bufferMessageBook.putLong(PRICE_OFFSET, expectedPrice);
-        bufferMessageBook.putByte(AUTHOR_LENGTH_OFFSET, expectedAuthorLength);
-        bufferMessageBook.putStringWithoutLengthAscii(AUTHOR_VAR_DATA_OFFSET, expectedAuthorVarData);
-        bufferMessageBook.putByte(BOOK_LENGTH_OFFSET, expectedBookLength);
-        bufferMessageBook.putStringWithoutLengthAscii(BOOK_VAR_DATA_OFFSET, expectedBookVarData);
+        BookInfoEncoder encoder = new BookInfoEncoder();
+        encoder.wrapAndApplyHeader(bufferMessageBook, BOOK_INFO_OFFSET, new MessageHeaderEncoder());
+
+        encoder.bookId(expectedBookId);
+        encoder.bookGenre(BookGenre.get(expectedBookGenre));
+        encoder.publishedDate().time(expectedPublishedDate);
+        encoder.stock(expectedStock);
+        encoder.price().mantissa(expectedPrice);
+
+        encoder.author(expectedAuthorVarData);
+        encoder.bookName(expectedBookVarData);
 
         final int bookId = bufferMessageBook.getInt(BOOK_ID_OFFSET, ByteOrder.LITTLE_ENDIAN);
         final byte bookGenre = bufferMessageBook.getByte(BOOK_GENRE_OFFSET);
@@ -158,14 +161,15 @@ public class LibryTemplateTest {
         assertEquals(expectedBookLength, bookLength);
         assertEquals(expectedBookVarData, bookVarData);
 
+
         BookInfoDecoder bookDecoder = new BookInfoDecoder();
-        bookDecoder.wrap(bufferMessageBook, BOOK_INFO_OFFSET, BOOK_INFO_ACTING_BLOCK_LENGTH, BOOK_INFO_ACTING_VERSION);
+        bookDecoder.wrapAndApplyHeader(bufferMessageBook, BOOK_INFO_OFFSET, new MessageHeaderDecoder());
         System.out.println(bookDecoder);
+
     }
 
     @Test
     public void giveMessageEmployeeInfo_WhenAssertEqualsAreAllCorrects_ThenPrintResult() {
-
         final int expectedEmployeeId = 1024;
         final long expectedDtBirth = 395627553000L;
         final long expectedDailyHours = 28800000L;
@@ -191,23 +195,21 @@ public class LibryTemplateTest {
         final short employeeEmailLengthOffset = (short) (employeeTelephoneVarDataOffset + expectedEmployeeTelephoneLength);
         final short employeeEmailVarDataOffset = employeeEmailLengthOffset + EMPLOYEE_EMAIL_LENGTH_CAPACITY;
 
-        MutableDirectBuffer bufferMessageEmployee = new UnsafeBuffer(ByteBuffer.allocateDirect(EMPLOYEE_ID_LENGTH_CAPACITY + DT_BIRTH_LENGTH_CAPACITY + DAILY_HOURS_LENGTH_CAPACITY + PAYMENT_FOR_HOUR_LENGTH_CAPACITY + ENTRY_DT_LENGTH_CAPACITY + EMPLOYEE_LENGTH_CAPACITY + expectedEmployeeNameLength + SSN_LENGTH_CAPACITY + expectedSSNLength + ACTUAL_EMPLOYEE_FUNCTION_LENGTH_CAPACITY + expectedActualEmployeeFunctionLength + EMPLOYEE_TELEPHONE_LENGTH_CAPACITY + expectedEmployeeTelephoneLength + EMPLOYEE_EMAIL_LENGTH_CAPACITY + expectedEmployeeEmailLength));
+        MutableDirectBuffer bufferMessageEmployee = new UnsafeBuffer(ByteBuffer.allocateDirect(MESSAGE_HEADER_LENGTH_CAPACITY + EMPLOYEE_ID_LENGTH_CAPACITY + DT_BIRTH_LENGTH_CAPACITY + DAILY_HOURS_LENGTH_CAPACITY + PAYMENT_FOR_HOUR_LENGTH_CAPACITY + ENTRY_DT_LENGTH_CAPACITY + EMPLOYEE_LENGTH_CAPACITY + expectedEmployeeNameLength + SSN_LENGTH_CAPACITY + expectedSSNLength + ACTUAL_EMPLOYEE_FUNCTION_LENGTH_CAPACITY + expectedActualEmployeeFunctionLength + EMPLOYEE_TELEPHONE_LENGTH_CAPACITY + expectedEmployeeTelephoneLength + EMPLOYEE_EMAIL_LENGTH_CAPACITY + expectedEmployeeEmailLength));
 
-        bufferMessageEmployee.putInt(EMPLOYEE_ID_OFFSET, expectedEmployeeId);
-        bufferMessageEmployee.putLong(DT_BIRTH_OFFSET, expectedDtBirth);
-        bufferMessageEmployee.putLong(DAILY_HOURS_OFFSET, expectedDailyHours);
-        bufferMessageEmployee.putInt(PAYMENT_FOR_HOUR_OFFSET, expectedPaymentForHour);
-        bufferMessageEmployee.putLong(ENTRY_DT_OFFSET, expectedEntryDt);
-        bufferMessageEmployee.putByte(EMPLOYEE_NAME_LENGTH_OFFSET, expectedEmployeeNameLength);
-        bufferMessageEmployee.putStringWithoutLengthAscii(EMPLOYEE_NAME_VAR_DATA_OFFSET, expectedEmployeeNameVarData);
-        bufferMessageEmployee.putByte(snnLengthOffset, expectedSSNLength);
-        bufferMessageEmployee.putStringWithoutLengthAscii(snnVarDataOffset, expectedSSNVarData);
-        bufferMessageEmployee.putByte(actualEmployeeFunctionLengthOffset, expectedActualEmployeeFunctionLength);
-        bufferMessageEmployee.putStringWithoutLengthAscii(actualEmployeeVarDataOffset, expectedActualEmployeeFunctionVarData);
-        bufferMessageEmployee.putByte(employeeTelephoneLengthOffset, expectedEmployeeTelephoneLength);
-        bufferMessageEmployee.putStringWithoutLengthAscii(employeeTelephoneVarDataOffset, expectedEmployeeTelephoneVarData);
-        bufferMessageEmployee.putByte(employeeEmailLengthOffset, expectedEmployeeEmailLength);
-        bufferMessageEmployee.putStringWithoutLengthAscii(employeeEmailVarDataOffset, expectedEmployeeEmailVarData);
+        EmployeeInfoEncoder encoder = new EmployeeInfoEncoder();
+        encoder.wrapAndApplyHeader(bufferMessageEmployee, EMPLOYEE_INFO_OFFSET, new MessageHeaderEncoder());
+
+        encoder.employeeId(expectedEmployeeId);
+        encoder.dtBirth().time(expectedDtBirth);
+        encoder.dailyHours().time(expectedDailyHours);
+        encoder.paymentForHour(expectedPaymentForHour);
+        encoder.entryDt().time(expectedEntryDt);
+        encoder.employeeName("John Doe");
+        encoder.sSN("123-45-6789");
+        encoder.actualEmployeeFunction("Software Engineer");
+        encoder.employeeTelephone("(123) 456-7890");
+        encoder.employeeEmail("john.doe@example.com");
 
         final int employeeId = bufferMessageEmployee.getInt(EMPLOYEE_ID_OFFSET, ByteOrder.LITTLE_ENDIAN);
         final long dtBirth = bufferMessageEmployee.getLong(DT_BIRTH_OFFSET, ByteOrder.LITTLE_ENDIAN);
@@ -242,13 +244,12 @@ public class LibryTemplateTest {
         assertEquals(expectedEmployeeEmailVarData, employeeEmailVarData);
 
         EmployeeInfoDecoder employeeDecoder = new EmployeeInfoDecoder();
-        employeeDecoder.wrap(bufferMessageEmployee, EMPLOYEE_INFO_OFFSET, EMPLOYEE_INFO_ACTING_BLOCK_LENGTH, EMPLOYEE_ACTING_VERSION);
+        employeeDecoder.wrapAndApplyHeader(bufferMessageEmployee, EMPLOYEE_INFO_OFFSET, new MessageHeaderDecoder());
         System.out.println(employeeDecoder);
     }
 
     @Test
     public void giveMessageSupplierInfo_WhenAssertEqualsAreAllCorrects_ThenPrintResult() {
-
         final int expectedSupplierId = 5678;
         final int expectedBookId = 1497;
         final int expectedSupplierStock = 100;
@@ -262,7 +263,7 @@ public class LibryTemplateTest {
         final byte expectedSupplierEmailLength = 20;
         final String expectedSupplierEmailVarData = "supplier@example.com";
 
-        final short bookIdOffset = 4;
+        final short bookIdOffset = 12;
         final short einLengthOffset = (short) (SUPPLIER_NAME_VARDATA_OFFSET + expectedSupplierNameLength);
         final short einVarDataOffset = einLengthOffset + EIN_LENGTH_CAPACITY;
         final short supplierTelephoneLengthOffset = (short) (einVarDataOffset + expectedEINLength);
@@ -270,20 +271,19 @@ public class LibryTemplateTest {
         final short supplierEmailLengthOffset = (short) (supplierTelephoneVarDataOffset + expectedSupplierTelephoneLength);
         final short supplierEmailVarDataOffset = supplierEmailLengthOffset + SUPPLIER_EMAIL_LENGTH_CAPACITY;
 
-        MutableDirectBuffer bufferMessageSupplier = new UnsafeBuffer(ByteBuffer.allocateDirect(SUPPLIER_ID_LENGTH_CAPACITY + BOOK_ID_LENGTH_CAPACITY + SUPPLIER_STOCK_LENGTH_CAPACITY + NEXT_DELIVERY_LENGTH_CAPACITY + SUPPLIER_LENGTH_CAPACITY + expectedSupplierNameLength + EIN_LENGTH_CAPACITY + expectedEINLength + SUPPLIER_TELEPHONE_LENGTH_CAPACITY + expectedSupplierTelephoneLength + SUPPLIER_EMAIL_LENGTH_CAPACITY + expectedSupplierEmailLength));
+        MutableDirectBuffer bufferMessageSupplier = new UnsafeBuffer(ByteBuffer.allocateDirect(MESSAGE_HEADER_LENGTH_CAPACITY + SUPPLIER_ID_LENGTH_CAPACITY + SUPPLIER_STOCK_LENGTH_CAPACITY + NEXT_DELIVERY_LENGTH_CAPACITY + SUPPLIER_LENGTH_CAPACITY + expectedSupplierNameLength + EIN_LENGTH_CAPACITY + expectedEINLength + SUPPLIER_TELEPHONE_LENGTH_CAPACITY + expectedSupplierTelephoneLength + SUPPLIER_EMAIL_LENGTH_CAPACITY + expectedSupplierEmailLength+20));
 
-        bufferMessageSupplier.putInt(SUPPLIER_ID_OFFSET, expectedSupplierId);
-        bufferMessageSupplier.putInt(bookIdOffset, expectedBookId);
-        bufferMessageSupplier.putInt(SUPPLIER_STOCK_OFFSET, expectedSupplierStock);
-        bufferMessageSupplier.putLong(NEXT_DELIVERY_OFFSET, expectedNextDelivery);
-        bufferMessageSupplier.putByte(SUPPLIER_NAME_LENGTH_OFFSET, expectedSupplierNameLength);
-        bufferMessageSupplier.putStringWithoutLengthAscii(SUPPLIER_NAME_VARDATA_OFFSET, expectedSupplierNameVarData);
-        bufferMessageSupplier.putByte(einLengthOffset, expectedEINLength);
-        bufferMessageSupplier.putStringWithoutLengthAscii(einVarDataOffset, expectedEINVarData);
-        bufferMessageSupplier.putByte(supplierTelephoneLengthOffset, expectedSupplierTelephoneLength);
-        bufferMessageSupplier.putStringWithoutLengthAscii(supplierTelephoneVarDataOffset, expectedSupplierTelephoneVarData);
-        bufferMessageSupplier.putByte(supplierEmailLengthOffset, expectedSupplierEmailLength);
-        bufferMessageSupplier.putStringWithoutLengthAscii(supplierEmailVarDataOffset, expectedSupplierEmailVarData);
+        SupplierInfoEncoder encoder = new SupplierInfoEncoder();
+        encoder.wrapAndApplyHeader(bufferMessageSupplier, SUPPLIER_INFO_OFFSET, new MessageHeaderEncoder());
+
+        encoder.supplierId(expectedSupplierId);
+        encoder.bookId(expectedBookId);
+        encoder.supplierStock(expectedSupplierStock);
+        encoder.nextDelivery().time(expectedNextDelivery);
+        encoder.supplierName("Book Supplier");
+        encoder.eIN("12-3456789");
+        encoder.supplierTelephone("(987) 654-3210");
+        encoder.supplierEmail("supplier@example.com");
 
         final int supplierId = bufferMessageSupplier.getInt(SUPPLIER_ID_OFFSET, ByteOrder.LITTLE_ENDIAN);
         final int bookId = bufferMessageSupplier.getInt(bookIdOffset, ByteOrder.LITTLE_ENDIAN);
@@ -312,7 +312,7 @@ public class LibryTemplateTest {
         assertEquals(expectedSupplierEmailVarData, supplierEmailVarData);
 
         SupplierInfoDecoder supplierDecoder = new SupplierInfoDecoder();
-        supplierDecoder.wrap(bufferMessageSupplier, SUPPLIER_INFO_OFFSET, SUPPLIER_INFO_ACTING_BLOCK_LENGTH, SUPPLIER_ACTING_VERSION);
+        supplierDecoder.wrapAndApplyHeader(bufferMessageSupplier, SUPPLIER_INFO_OFFSET, new MessageHeaderDecoder());
         System.out.println(supplierDecoder);
     }
 
