@@ -13,16 +13,10 @@ public class ExpectedValuesLibryTest {
     final short MESSAGE_HEADER_OFFSET = 0;
 
     final short BOOK_INFO_OFFSET = 0;
-    final short BOOK_INFO_ACTING_BLOCK_LENGTH = 25;
-    final short BOOK_INFO_ACTING_VERSION = 100;
 
     final short EMPLOYEE_INFO_OFFSET = 0;
-    final short EMPLOYEE_INFO_ACTING_BLOCK_LENGTH = 32;
-    final short EMPLOYEE_ACTING_VERSION = 100;
 
     final short SUPPLIER_INFO_OFFSET = 0;
-    final short SUPPLIER_INFO_ACTING_BLOCK_LENGTH = 20;
-    final short SUPPLIER_ACTING_VERSION = 100;
 
     final short BLOCK_LENGTH_OFFSET = 0;
     final short TEMPLATE_ID_OFFSET = 2;
