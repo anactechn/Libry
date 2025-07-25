@@ -1,25 +1,22 @@
-name: Execution of tests
+name: Java CI with Tests
 
 on:
-    pull_request:
-      branches: [ main ]
+  pull_request:
+    branches: [main]
 
 jobs:
-  execute-tests:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout project
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: set up JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: install dependencies
-        uses: npm install
-
-      - name: run libryTests
-        run: npx LibryTemplateTest run
-
-      - name: run expectedValuesLibryTests
-        run: npx ExpectedValuesLibryTest run
+      - name: Run tests with Maven
+        run: mvn test
