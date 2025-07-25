@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright 2022. B3. Todos os direitos reservados.
-  ~ O projeto entrypoint-codecs, seu codigo-fonte e a documentacao completa relacionada (memorial descritivo, especificacoes
-  ~ funcionais internas, diagramas, fluxogramas, manuais e outros dados tecnicos) foram desenvolvidos pela
-  ~ B3 ou por terceiros por ela contratados, mediante o dispendio de trabalho, tempo e recursos
-  ~ materiais consideraveis, sendo que quaisquer direitos, inclusive de propriedade intelectual a ele
-  ~ relacionados (inclusive marcas, patentes, direitos autorais, registros de programa de computador etc.),
-  ~ pertencem exclusivamente a B3, nao podendo ser, de qualquer forma ou por qualquer meio,
-  ~ utilizados, distribuidos ou modificados por terceiros, salvo mediante autorizacao previa da B3,
-  ~ formalizada em documento proprio.
-  -->
 
 <xs:schema xmlns:sbe="http://fixprotocol.io/2016/sbe" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fixprotocol.io/2016/sbe" elementFormDefault="unqualified" version="1.0 Draft Standard">
   <xs:annotation>
